@@ -39,7 +39,7 @@ python manage.py runserver
 ```
 
 The website will be accessible by the address http://127.0.0.1:8000/ .
-The django web server can be stopped by pressing ##Ctrl+C##.
+The django web server can be stopped by pressing **Ctrl+C**.
 
 If you want to check out the admin panel, be sure to create a superuser before starting the server:
 ```
