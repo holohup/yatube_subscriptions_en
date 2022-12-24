@@ -100,9 +100,9 @@ CACHES = {
     }
 }
 
-LANGUAGE_CODE = 'ru'
+LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'Europe/Moscow'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 

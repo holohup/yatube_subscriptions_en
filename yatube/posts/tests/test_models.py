@@ -13,19 +13,19 @@ class PostModelTest(TestCase):
     def setUpTestData(cls):
         cls.user = User.objects.create_user(username='auth')
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test_group',
-            description='Тестовое описание',
+            description='Test description',
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text=('Вокруг качается ковыль, за далью - даль, за былью - быль, '
-                  'И небольшой автомобиль вздымает в поле пыль.'
+            text=('The evidence before the court is incontroversable, '
+                  'There is no need for the jury to retire.'
                   )
         )
 
     def test_models_have_correct_object_names(self):
-        """Модели возвращают ожидаемые str."""
+        """Models return expected str."""
 
         expected_group_name = self.group.title
         expected_post_name = self.post.text[:settings.TEXT_LIMIT_FOR_STR]
@@ -38,13 +38,13 @@ class PostModelTest(TestCase):
                 self.assertEqual(expectation, string)
 
     def test_verbose_name(self):
-        """Правильные, читабельные названия полей."""
+        """Correct, readable field titles."""
 
         field_verboses = {
-            'text': 'Текст поста',
-            'pub_date': 'Дата публикации',
-            'group': 'Группа',
-            'author': 'Автор',
+            'text': 'Post text',
+            'pub_date': 'Publication date',
+            'group': 'Group',
+            'author': 'Author',
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):
@@ -54,11 +54,11 @@ class PostModelTest(TestCase):
                 )
 
     def test_help_text(self):
-        """Хелпы человекопонятны."""
+        """Human-readable help texts."""
 
         field_verboses = {
-            'text': 'Введите текст поста',
-            'group': 'Группа, к которой будет относиться пост',
+            'text': 'Enter post text',
+            'group': 'Group for the post',
         }
         for field, expected_value in field_verboses.items():
             with self.subTest(field=field):

@@ -22,13 +22,13 @@ class PostFormTests(TestCase):
         cls.authorized_client = Client()
         cls.authorized_client.force_login(cls.user)
         cls.group = Group.objects.create(
-            title='Тестовая группа',
+            title='Test group',
             slug='test_group',
-            description='Тестовое описание',
+            description='Test description',
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Старый пес сторожил гладиолусы',
+            text='An old dog has been guarding flowers',
             group=cls.group
         )
 
@@ -38,10 +38,9 @@ class PostFormTests(TestCase):
         super().tearDownClass()
 
     def test_post_creation_by_an_authorized_user(self):
-        """Пост создается авторизованным пользователем при отправке
-        валидной формы."""
+        """When an authorized user fills a valid form, a post is created."""
 
-        fake = Faker('ru_RU')
+        fake = Faker('en_US')
         post_count = Post.objects.count()
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -80,20 +79,20 @@ class PostFormTests(TestCase):
         )
 
     def test_edit_post_by_an_authorized_user(self):
-        """Автор поста может его редактировать."""
+        """Post author can edit it."""
 
         test_post = Post.objects.create(
             author=self.user,
-            text='И ей шептал: "С надеждой вдаль гляди!"',
+            text='And whispered to her: "there is always place for hope"',
             group=self.group
         )
         new_group = Group.objects.create(
-            title='Группа для редактирования',
+            title='Group for editing',
             slug='test_edit_group',
-            description='Сюда попадет пост, если его удастся отредактировать',
+            description='If the post can be edited, it will go here',
         )
         post_count = Post.objects.count()
-        text = 'Теплый ветер ему гладил волосы'
+        text = 'Warm wind cuddled with his hair'
         response = self.authorized_client.post(
             reverse('posts:post_edit', args=(test_post.id,)),
             data={
@@ -114,9 +113,9 @@ class PostFormTests(TestCase):
         )
 
     def test_edit_post_by_authorized_nonauthor(self):
-        """Авторизованный юзер не может редактировать чужой пост."""
+        """An authorized user cannot edit other user's post."""
 
-        text = 'И ей шептал: "С надеждой вдаль гляди!"'
+        text = 'A quick brown fox jumps over the edge, flies and dissapears'
         test_post = Post.objects.create(
             author=self.user,
             text=text,
@@ -142,7 +141,7 @@ class PostFormTests(TestCase):
         )
 
     def test_post_creation_by_an_unauthorized_user(self):
-        """Попытка создать пост неавторизованным юзером."""
+        """Attempt to create a post by an unauthorized user."""
 
         login_url = reverse('users:login')
         url = reverse('posts:post_create')
@@ -150,7 +149,7 @@ class PostFormTests(TestCase):
         response = self.client.post(
             url,
             data={
-                'text': 'Товарищ, нам ехать далёко!', 'group': self.group.id
+                'text': 'We have got to go ASAP!', 'group': self.group.id
             },
             follow=True
         )
@@ -158,11 +157,11 @@ class PostFormTests(TestCase):
         self.assertRedirects(response, f'{login_url}?next={url}')
 
     def test_comment_by_an_authorized_user(self):
-        """Проверяем, что авторизованный юзер может оставить
-        комментарий и что после успешной отправки комментарий
-        появляется на странице поста."""
+        """Check if an authorized user can leave a comment,
+        And if upon commenting the comment appears on the post page.
+        """
 
-        text = 'Никогда бы не подумал, шикарно!'
+        text = 'Who would have thouth! Splendid!'
         comment_count = Comment.objects.count()
         post_detail_url = reverse('posts:post_detail', args=(self.post.id,))
         response = self.authorized_client.post(
@@ -183,7 +182,7 @@ class PostFormTests(TestCase):
         self.assertEqual(response.context['comments'][0], last_comment)
 
     def test_comment_by_an_unauthorized_user(self):
-        """Проверь, что аноним не может оставлять комментарии."""
+        """Anonymous can't leave a comment."""
 
         login_url = reverse('users:login')
         url = reverse('posts:add_comment', args=(self.post.id,))
@@ -191,7 +190,7 @@ class PostFormTests(TestCase):
         response = self.client.post(
             url,
             data={
-                'text': 'Люблю оставлять анонимные комменты',
+                'text': 'I love anonymous trolling',
                 'post': self.post.id
             },
             follow=True
@@ -200,8 +199,8 @@ class PostFormTests(TestCase):
         self.assertRedirects(response, f'{login_url}?next={url}')
 
     def test_post_creation_with_non_image_file(self):
-        """Проверяет, что форма выдаст ошибку при создании поста
-        с файлом, не являющимся изображением."""
+        """Check if the form returns an error upon being
+        submitted with a file which is not an image."""
 
         fake = Faker('ru_RU')
         post_count = Post.objects.count()
@@ -226,6 +225,6 @@ class PostFormTests(TestCase):
             response,
             'form',
             'image',
-            ('Загрузите правильное изображение. Файл, который вы загрузили, '
-             'поврежден или не является изображением.')
+            ('Upload a valid image. The file you uploaded was either not an '
+             'image or a corrupted image.')
         )
