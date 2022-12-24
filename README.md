@@ -48,6 +48,14 @@ python manage.py createsuperuser
 
 Then launch the server and enter your creditials at http://127.0.0.1:8000/admin/
 
+#### Fixtures
+
+For testing purposes and for your convenience a set of prepopulated data is available to be uploaded to the database. It also comes with an admin account **tester/tester**. To load the data, make sure you're in the project virtual environment in the _yatube_ folder and execute the following command:
+
+```
+python manage.py loaddata fixtures.json
+```
+
 ### Final notes
 - This version is supplied with Django Debug Toolbar installed to check the database queries effeciency. It is turned off by setting DEBUG = False in the _settings.py_ file.
 - The project doesn't include an e-mail server. All the e-mails (needed for registration, password restoration/reset, etc) are saved as files in _yatube/sent_emails_ folder.
