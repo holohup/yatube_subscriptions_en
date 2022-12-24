@@ -1,3 +1,7 @@
+## YaTube Social Network / Blog Platform educational project
+
+Welcome to my Python 3.7 / Django 2.2.19 educational project. It's a social network with all required functionality, including subscriptions. It's got 30 custom tests to check everything's is working as planned. 
+
 ### Installation
 
 ```
