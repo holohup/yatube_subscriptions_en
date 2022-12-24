@@ -1,6 +1,6 @@
 {% if user.is_authenticated %}
   <div class="card my-4">
-    <h5 class="card-header">Добавить комментарий:</h5>
+    <h5 class="card-header">Add Comment:</h5>
     <div class="card-body">
       <form method="post" action="{% url 'posts:add_comment' post.id %}">
         {% include "includes/form_errors.html" %}
@@ -8,7 +8,7 @@
         {% for field in form %}
           {% include "includes/form_field.html" %}
         {% endfor %}
-        <button type="submit" class="btn btn-primary">Отправить</button>
+        <button type="submit" class="btn btn-primary">Send</button>
       </form>
     </div>
   </div>

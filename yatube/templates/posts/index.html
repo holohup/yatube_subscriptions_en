@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block title %}
-  Последние обновления на сайте
+  Latest updates
 {% endblock title %}
 {% block content %}
-  <h1>Последние обновления на сайте</h1>
+  <h1>Latest updates</h1>
   {% include 'posts/includes/switcher.html' %}
   {% for post in page_obj %}
     {% include "includes/post.html" %}

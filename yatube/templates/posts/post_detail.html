@@ -1,26 +1,26 @@
 {% extends "base.html" %}
 {% load thumbnail %}
 {% block title %}
-  Пост {{ post.text|slice:":30" }}
+  Post {{ post.text|slice:":30" }}
 {% endblock title %}
 {% block content %}
   <div class="row">
     <aside class="col-12 col-md-3">
       <ul class="list-group list-group-flush">
-        <li class="list-group-item">Дата публикации: {{ post.pub_date|date:"d E Y" }}</li>
+        <li class="list-group-item">Publication date: {{ post.pub_date|date:"d E Y" }}</li>
         {% if post.group %}
           <li class="list-group-item">
-            Группа: {{ post.group.title }}
+            Group: {{ post.group.title }}
             <br>
-            <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
+            <a href="{% url 'posts:group_list' post.group.slug %}">all group posts</a>
           </li>
         {% endif %}
-        <li class="list-group-item">Автор: {{ post.author.get_full_name }}</li>
+        <li class="list-group-item">Author: {{ post.author.get_full_name }}</li>
         <li class="list-group-item d-flex justify-content-between align-items-center">
-          Всего постов автора:  <span >{{ post.author.posts.count }}</span>
+          Total posts by author:  <span >{{ post.author.posts.count }}</span>
         </li>
         <li class="list-group-item">
-          <a href="{% url 'posts:profile' post.author %}">все посты пользователя</a>
+          <a href="{% url 'posts:profile' post.author %}">all author's posts</a>
         </li>
       </ul>
     </aside>
@@ -30,7 +30,7 @@
       {% endthumbnail %}
       <p>{{ post.text|linebreaksbr }}</p>
       {% if post.author == user %}
-        <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">редактировать запись</a>
+        <a class="btn btn-primary" href="{% url 'posts:post_edit' post.id %}">edit post</a>
       {% endif %}
       {% include 'includes/comment.html' %}
     </article>
