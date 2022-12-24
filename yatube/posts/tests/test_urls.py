@@ -22,11 +22,11 @@ class ProjectURLTests(TestCase):
 
         cls.post = Post.objects.create(
             author=cls.post_author,
-            text='Тестовый текст',
+            text='Test text',
         )
         cls.group = Group.objects.create(
-            title='Тестовая группа',
-            description='Фокус-покус, ее уже нет',
+            title='Test group',
+            description='Big Bada Boom!',
             slug='test_group',
         )
 
@@ -44,8 +44,8 @@ class ProjectURLTests(TestCase):
         cache.clear()
 
     def test_unauthorized_pages_availability(self):
-        """Доступность страниц, не требующих авторизации,
-        неавторизованному пользователю."""
+        """Check if anonymous-allowed pages are available
+        for an anonymous user."""
 
         for url in self.unauthorized_user_available_pages:
             with self.subTest(url=url):
@@ -53,8 +53,7 @@ class ProjectURLTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK, url)
 
     def test_unauthorized_templates_correctness(self):
-        """Доступность правильных шаблонов неавторизованному
-        пользователю."""
+        """Are expected templates available to an unauthorized user."""
 
         for address, tmpl in self.unauthorized_user_available_pages.items():
             with self.subTest(address=address):
@@ -63,7 +62,8 @@ class ProjectURLTests(TestCase):
                 self.assertTemplateUsed(response, tmpl)
 
     def test_edit_other_persons_post_redirect(self):
-        """Работа редиректа при попытке редактировать чужой пост."""
+        """Check redirects when an authenticated user tries
+        to edit other user's post."""
 
         response = self.authorized_client.get(
             reverse('posts:post_edit', args=(self.post.id,)), follow=True
@@ -73,8 +73,8 @@ class ProjectURLTests(TestCase):
         )
 
     def test_unauthorized_user_private_pages_redirect(self):
-        """Работа редиректа для неавторизованного пользователя
-        при попытке зайти на приватные страницы."""
+        """Check if the redirects are working when an unauthenticated
+        user visits private pages."""
 
         login_url = reverse('users:login')
         pages = {
@@ -89,8 +89,8 @@ class ProjectURLTests(TestCase):
                 )
 
     def test_edit_and_create_availability_for_post_author(self):
-        """Доступность страниц при попытке авторизованного пользователя
-        создавать пост и редактировать свой пост."""
+        """Are the pages available when an authorized user
+        creates or edits a post."""
 
         pages = {
             reverse('posts:post_create'),
@@ -102,8 +102,8 @@ class ProjectURLTests(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_authors_create_and_edit_templates(self):
-        """Правильность шаблонов при попытке авторизованного пользователя
-        создавать новый пост, или редактировать свой пост."""
+        """Check if the templates are correct when an authorized
+        user creates or edits a post."""
 
         correct_templates = {
             reverse('posts:post_create'): 'posts/create_post.html',

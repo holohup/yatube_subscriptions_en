@@ -26,13 +26,13 @@ class ProjectViewsTests(TestCase):
             username='InsaneTester')
         cls.authorized_client.force_login(cls.authorized_user)
         cls.test_group = Group.objects.create(
-            title='Тестовая группа для поста',
-            description='Дни ее скоротечны',
+            title='Test post group',
+            description='It will not be long',
             slug='test_group',
         )
         cls.test_post = Post.objects.create(
             author=cls.authorized_user,
-            text='Тестовый текстовый пост',
+            text='Test text post or text test post',
             group=cls.test_group
         )
 
@@ -46,7 +46,7 @@ class ProjectViewsTests(TestCase):
         super().tearDownClass()
 
     def test_index_correct_context(self):
-        """Правильность контекста главной страницы."""
+        """Main page context correctness."""
 
         response = self.client.get(reverse('posts:index'))
         self.assertIn('page_obj', response.context)
@@ -54,7 +54,7 @@ class ProjectViewsTests(TestCase):
         self.assertEqual(page_content[0], self.test_post)
 
     def test_group_list_correct_context(self):
-        """Правильность контекста списка постов группы."""
+        """Group post list context correctness."""
 
         response = self.client.get(
             reverse(
@@ -69,7 +69,7 @@ class ProjectViewsTests(TestCase):
         self.assertEqual(page_content[0], self.test_post)
 
     def test_profile_correct_context(self):
-        """Правильность контекста профиля пользователя."""
+        """User profile context correctness."""
 
         response = self.client.get(
             reverse('posts:profile', args=(self.authorized_user.username,))
@@ -82,7 +82,7 @@ class ProjectViewsTests(TestCase):
         self.assertEqual(page_content[0], self.test_post)
 
     def test_post_detail_correct_context(self):
-        """Контекст страницы поста."""
+        """Post page context."""
 
         response = self.client.get(
             reverse('posts:post_detail', args=(self.test_post.id,))
@@ -92,8 +92,7 @@ class ProjectViewsTests(TestCase):
         self.assertEqual(received_post, self.test_post)
 
     def test_create_and_edit_post_correct_context(self):
-        """Контекст страницы создания/редактирования поста
-        для авторизованного пользователя."""
+        """Context of create/edit post page for a authenticated user."""
 
         pages = {
             'create': reverse('posts:post_create'),
@@ -109,14 +108,14 @@ class ProjectViewsTests(TestCase):
                     self.assertTrue(response.context['is_edit'])
 
     def test_testpost_not_in_an_unappropriated_group(self):
-        """Не попал ли пост в неподходящую группу."""
+        """Check if the post doesn't appear in an incorrect group."""
 
         other_group = Group.objects.create(
-            title='Группа для тестирования',
-            description='В этой группе не должно быть искомого поста',
+            title='Test post group',
+            description='The new post should not be here',
             slug='test_group_2'
         )
-        fake = Faker('ru_RU')
+        fake = Faker('en_US')
         Post.objects.bulk_create([(Post(
             author=self.authorized_user,
             text=fake.text(),
@@ -129,8 +128,9 @@ class ProjectViewsTests(TestCase):
         self.assertNotIn(self.test_post, page_obj)
 
     def test_posts_with_images_exist_in_page_context(self):
-        """Создает пост с картинкой и проверяет, попала ли картинка
-        в контекст страниц: главной, профайла, группы и поста."""
+        """Creates a post with an image and checks if
+        the image has appeared in the main, profile, group
+        and post pages context."""
 
         small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
@@ -176,14 +176,14 @@ class PaginatorViewsTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.fake = Faker('ru_RU')
+        cls.fake = Faker('en_US')
         cls.number_of_posts = random.randint(
             settings.POSTS_TO_DISPLAY + 1, 2 * settings.POSTS_TO_DISPLAY - 1
         )
         cls.authorized_user = User.objects.create_user(username='MrNobody')
         cls.group = Group.objects.create(
-            title='Тестовая группа для постов',
-            description='Группа Ли',
+            title='Test group for posts',
+            description='Li group',
             slug='test_group'
         )
         Post.objects.bulk_create([(Post(
@@ -197,9 +197,9 @@ class PaginatorViewsTest(TestCase):
         cache.clear()
 
     def test_paginator_on_all_paginated_pages(self):
-        """Проверяет все страницы с пагинатором:
-        -Количество постов на первой должно равняться максимальному
-        -Количество постов на второй должно равняться остатку."""
+        """Checks all paginated pages:
+        -Number of posts on the first page should equal to a maximum
+        -Number of posts on the second page should equal to the remainder."""
 
         pages = {
             1: settings.POSTS_TO_DISPLAY,
@@ -222,7 +222,7 @@ class SubscriptionsTests(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        cls.fake = Faker('ru_RU')
+        cls.fake = Faker('en_US')
         cls.user_a = User.objects.create_user(username='User_A')
         cls.user_b = User.objects.create_user(username='User_B')
         cls.author = User.objects.create_user(username='Author')
@@ -240,8 +240,8 @@ class SubscriptionsTests(TestCase):
             'posts:profile_unfollow', args=(cls.author,)
         )
         cls.group = Group.objects.create(
-            title='Тестовая группа для постов',
-            description='Подпишись, жми колокольчик',
+            title='Post test group',
+            description='Subscribe, click on the bell icon and share!',
             slug='test_group'
         )
         Post.objects.bulk_create([(Post(
@@ -255,8 +255,8 @@ class SubscriptionsTests(TestCase):
         cache.clear()
 
     def test_post_visibility_after_post_creation(self):
-        """Создает пост и проверяет, что он виден для подписчика
-        и не виден для неподписанного пользователя."""
+        """Creates a post and makes sure it's visible to a subscriber
+        and isn't visible to someone who isn't subscribed."""
 
         Follow.objects.create(user=self.user_a, author=self.author)
         test_post = Post.objects.create(
@@ -272,10 +272,10 @@ class SubscriptionsTests(TestCase):
         self.assertNotIn(test_post, page_obj_b)
 
     def test_post_visibility_after_subscription_creation(self):
-        """Проверяет, что пост появляется на странице подписок,
-        если пользователь подписывается на автора и не появляется,
-        если не подписывается. Подписчик user_a подписывается
-        на author, user_b - нет."""
+        """Checks if the post appears on the subscriptions page
+        if the user is subscribed to the author and doesn't appear
+        if the user isn't subscribed. User user_a subscribes on
+        the author blog, user_b doesn't."""
 
         response_a = self.client_a.get(self.index_url)
         response_b = self.client_b.get(self.index_url)
@@ -293,7 +293,7 @@ class SubscriptionsTests(TestCase):
         self.assertNotIn(test_post, response_b.context['page_obj'])
 
     def test_subscriptions_availability(self):
-        """Проверка создания подписки."""
+        """Subscription creating check."""
 
         self.assertFalse(
             Follow.objects.filter(
@@ -314,7 +314,7 @@ class SubscriptionsTests(TestCase):
         self.assertEqual(Follow.objects.count(), subscriptions + 1)
 
     def test_unsubscriptions_availability(self):
-        """Проверка удаления подписки."""
+        """Subscription deletion check."""
 
         Follow.objects.create(user=self.user_a, author=self.author)
         subscriptions = Follow.objects.count()
@@ -340,13 +340,13 @@ class ProjectCacheTests(TestCase):
             username='InsaneTester')
         cls.authorized_client.force_login(cls.authorized_user)
         cls.test_group = Group.objects.create(
-            title='Тестовая группа для поста',
-            description='Дни ее скоротечны',
+            title='Post test group',
+            description='It should not last long',
             slug='test_group',
         )
         cls.test_post = Post.objects.create(
             author=cls.authorized_user,
-            text='Тестовый текстовый пост',
+            text='Post post post, text text text, test test test',
             group=cls.test_group
         )
 
@@ -354,12 +354,12 @@ class ProjectCacheTests(TestCase):
         cache.clear()
 
     def test_index_cache_is_working(self):
-        """Проверяет, кэшируется ли главная страница"""
+        """Checks if the main page is cached."""
 
         index_url = reverse('posts:index')
         test_post = Post.objects.create(
             author=self.authorized_user,
-            text='Матушка возьмет ведро, молча наберет воды.',
+            text='Take this bucket and fill it with water.',
             group=self.test_group
         )
 
