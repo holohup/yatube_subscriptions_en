@@ -21,7 +21,7 @@ git clone git@github.com:holohup/yatube_subscriptions_en.git && cd yatube_subscr
 In order to proceed, we need to activate our virtual environment once again if it is not active:
 
 ```
-source venv/bin/activate
+source venv/bin/activate && cd yatube
 ```
 
 #### Pre-launch tests
