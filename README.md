@@ -13,7 +13,7 @@ This product features:
 ### Installation, testing and launching
 
 ```
-git clone git@github.com:holohup/yatube_subscriptions_en.git && cd yatube_subscriptions_en && ./install_yatube.sh
+git clone https://github.com/holohup/yatube_subscriptions_en.git && cd yatube_subscriptions_en && ./install_yatube.sh
 ```
 
 #### Virtual environment activation
