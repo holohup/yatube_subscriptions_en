@@ -50,7 +50,7 @@ Then launch the server and enter your credentials at http://127.0.0.1:8000/admin
 
 #### Fixtures
 
-For testing purposes and your convenience a set of prepopulated data is available to be uploaded to the database. It also comes with an admin account **tester/tester**. To load the data, make sure you're in the project virtual environment in the _yatube_ folder and execute the following command:
+For testing purposes and your convenience, a set of prepopulated data is available to be uploaded to the database. It also comes with an admin account **tester/tester**. To load the data, make sure you're in the project virtual environment in the _yatube_ folder and execute the following command:
 
 ```
 python manage.py loaddata ../fixtures/fixtures.json && mkdir media && mkdir media/posts/ && cp ../fixtures/*.jpg media/posts/
